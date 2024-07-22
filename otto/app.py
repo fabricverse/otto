@@ -2,59 +2,125 @@
 # import pandas as pd
 from openai import OpenAI
 import frappe
+import json
 
 
 
 @frappe.whitelist(allow_guest=True)
 def test_method():
-	return "Test method called successfully!"
+    return "Test method called successfully!"
 
 # Set up OpenAI API key
 
 # Function to query OpenAI with a prompt
-def query_openai(prompt, settings):
-
-	client = OpenAI(api_key=settings.api_key)
-	response = client.chat.completions.create(model="gpt-3.5-turbo",
-	messages=[
-		{"role": "system", "content": "You are a helpful assistant that autocompletes data entries based on provided information."},
-		{"role": "user", "content": prompt},
-	],
-	max_tokens=150,
-	n=1,
-	stop=None,
-	temperature=0.7)
-	return response.choices[0].message.content.strip()
+def query_openai(prompt):
+    settings = frappe.get_doc("Otto Settings", "Otto Settings")
+    client = OpenAI(api_key=settings.api_key)
+    response = client.chat.completions.create(
+        model=settings.model,
+        messages=[
+            {"role": "system", "content": settings.system_prompt_content},
+            {"role": "user", "content": prompt},
+        ],
+        max_tokens=150,
+        n=1,
+        stop=None,
+        temperature=0.7)
+    return response.choices[0].message.content.strip()
 
 @frappe.whitelist()
 def prompt():
-	settings = frappe.get_doc("Otto Settings", "Otto Settings")
-	#st.title("ERP Auto-Completion Tool")
+    
 
-	# File upload
-	# uploaded_file = st.file_uploader("Upload your CSV file", type=["csv"])
+    prompt = "The following is a datase is: WHO IS LETO II"
 
-	# if uploaded_file is not None:
-		# Load data
-		# data = pd.read_csv(uploaded_file)
-		# st.write("Data Preview:")
-		# st.write(data.head())
+    # Query OpenAI
+    response = query_openai(prompt)
 
-		# # User selects target variable
-		# target_variable = st.selectbox("Select the target variable (e.g., customer name):", data.columns)
+    # Display the response
+    # st.write("Auto-completed data:")
+    return response
 
-		# # User inputs value for target variable
-		# target_value = st.text_input(f"Enter value for {target_variable}:")
+@frappe.whitelist()
+def predict_next_customer(company):    
+    sales = get_sales(company)
+    customer_sales_data = get_customer_sales_data(sales)
 
-		# if target_value:
-			# Prepare the prompt
-			#prompt = f"The following is a dataset:\n{data.to_csv(index=False)}\n\nComplete the missing values for the row where {target_variable} is '{target_value}':"
+    if len(sales) < 1:
+        return
 
-	prompt = f"The following is a datase is: WHO IS LETO II"
+    prompt = """The following is a datase of the last {num_of_sales} sales for {company}: ```{customer_sales_data}```
+    Predict the next customer for {company}
+    """.format(num_of_sales=len(sales), company=company, customer_sales_data=customer_sales_data)
+    response = query_openai(prompt)
+    result = clean_json(response)
+    
+    return result
 
-	# Query OpenAI
-	response = query_openai(prompt, settings)
 
-	# Display the response
-	# st.write("Auto-completed data:")
-	return response
+
+@frappe.whitelist()
+def predict_sales_details(company):    
+    """
+        On the invoice
+            - Tax template
+            - Payment due date
+            - Fields: debit_to, currency, selling_price_list, terms
+        Items
+            - Name
+            - Description
+            - Qty
+            - UOM
+            - Rate
+
+
+    """
+    return
+    sales = get_sales(company)
+    customer_sales_data = get_customer_sales_data(sales)
+
+    if len(sales) < 1:
+        return
+
+    prompt = """The following is a datase of the last {num_of_sales} sales for {company}: ```{customer_sales_data}```
+    Predict the next customer for {company}
+    """.format(num_of_sales=len(sales), company=company, customer_sales_data=customer_sales_data)
+    response = query_openai(prompt)
+    result = clean_json(response)
+    
+    return result
+
+def clean_json(response_text):
+
+    possible_values = ["```", "json", "\n"]
+
+    # Replace each possible value in the response text
+    for value in possible_values:
+        response_text = response_text.replace(value, "")
+
+    try:
+        print(response_text)
+        response_json = json.loads(response_text)
+        return (response_json)
+    except Exception as e:
+        print("Failed to decode JSON:", e)
+        return
+
+def get_customer_sales_data(sales):
+    customer_sales_data = []
+    for sale in sales:
+        customer_sales_data.append({
+            'customer': sale.customer,
+            'invoice_name': sale.name,
+            'posting_date': sale.posting_date
+        })
+    return customer_sales_data
+
+def get_sales(company):
+    return frappe.db.sql("""
+        SELECT inv.*, items.*
+        FROM `tabSales Invoice` inv
+            LEFT JOIN `tabSales Invoice Item` items
+            ON inv.name = items.parent
+        WHERE inv.company = {company} AND inv.docstatus = 1
+    """.format(company=frappe.db.escape(company)), as_dict=1)

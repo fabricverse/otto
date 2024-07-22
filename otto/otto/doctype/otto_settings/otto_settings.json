@@ -8,7 +8,7 @@
   "api_settings_section",
   "api_key",
   "column_break_qgah",
-  "app_title",
+  "model",
   "prompt_engineering_section",
   "system_prompt_content"
  ],
@@ -30,12 +30,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "app_title",
-   "fieldtype": "Data",
-   "label": "App Title",
-   "reqd": 1
-  },
-  {
    "fieldname": "prompt_engineering_section",
    "fieldtype": "Section Break",
    "label": "Prompt Engineering"
@@ -45,13 +39,20 @@
    "fieldtype": "Long Text",
    "label": "System Prompt Content",
    "reqd": 1
+  },
+  {
+   "fieldname": "model",
+   "fieldtype": "Link",
+   "label": "Model",
+   "options": "AI Model",
+   "reqd": 1
   }
  ],
  "hide_toolbar": 1,
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2024-07-22 12:08:31.872432",
+ "modified": "2024-07-22 14:57:57.215413",
  "modified_by": "Administrator",
  "module": "otto",
  "name": "Otto Settings",
