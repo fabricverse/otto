@@ -130,6 +130,11 @@ app_license = "agpl-3.0"
 # 	}
 # }
 
+doc_events = {
+	"Otto Settings": {
+		# "on_update": "otto.app.test_method"
+	}
+}
 # Scheduled Tasks
 # ---------------
 
