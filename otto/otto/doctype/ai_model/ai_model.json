@@ -7,10 +7,9 @@
  "engine": "InnoDB",
  "field_order": [
   "model_name",
+  "endpoint",
   "column_break_opqh",
-  "provider",
-  "section_break_tokx",
-  "endpoint"
+  "provider"
  ],
  "fields": [
   {
@@ -38,10 +37,6 @@
    "options": "AI Model Provider"
   },
   {
-   "fieldname": "section_break_tokx",
-   "fieldtype": "Section Break"
-  },
-  {
    "fieldname": "endpoint",
    "fieldtype": "Data",
    "label": "Endpoint",
@@ -50,7 +45,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2024-07-22 14:57:22.707349",
+ "modified": "2024-07-24 16:40:01.824550",
  "modified_by": "Administrator",
  "module": "otto",
  "name": "AI Model",
