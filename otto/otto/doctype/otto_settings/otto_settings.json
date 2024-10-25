@@ -1,0 +1,83 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2024-07-22 11:54:16.250721",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "api_settings_section",
+  "api_key",
+  "column_break_qgah",
+  "model",
+  "prompt_engineering_section",
+  "system_prompt_content"
+ ],
+ "fields": [
+  {
+   "fieldname": "api_settings_section",
+   "fieldtype": "Section Break",
+   "label": "API Settings"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "API Key",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_qgah",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "prompt_engineering_section",
+   "fieldtype": "Section Break",
+   "label": "Prompt Engineering"
+  },
+  {
+   "fieldname": "system_prompt_content",
+   "fieldtype": "Long Text",
+   "label": "System Prompt Content",
+   "reqd": 1
+  },
+  {
+   "fieldname": "model",
+   "fieldtype": "Link",
+   "label": "Model",
+   "options": "AI Model",
+   "reqd": 1
+  }
+ ],
+ "hide_toolbar": 1,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2024-07-22 14:57:57.215413",
+ "modified_by": "Administrator",
+ "module": "otto",
+ "name": "Otto Settings",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "Accounts User",
+   "share": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}
